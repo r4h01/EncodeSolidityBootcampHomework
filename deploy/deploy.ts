@@ -1,24 +1,27 @@
 import { ethers } from "hardhat";
+import { Ballot } from "../typechain-types";
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import { DeployFunction } from "hardhat-deploy/types"
+const PROPOSALS = ["Proposal 1", "Proposal 2", "Proposal 3"];
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  function convertStringArrayToBytes32(array: string[]) {
+    const bytes32Array = [];
+    for (let index = 0; index < array.length; index++) {
+      bytes32Array.push(ethers.utils.formatBytes32String(array[index]));
+    }
+    return bytes32Array;
+  }
+  let ballotContract: Ballot;
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  const ballotFactory = await ethers.getContractFactory("Ballot");
+  ballotContract = await ballotFactory.deploy(
+    convertStringArrayToBytes32(PROPOSALS)
+  );
+  await ballotContract.deployed();
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  await lock.deployed();
-
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
