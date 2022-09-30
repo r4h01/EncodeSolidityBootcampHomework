@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Ballot } from "../typechain-types";
-
 const PROPOSALS = ["Proposal 1", "Proposal 2", "Proposal 3"];
 
 function convertStringArrayToBytes32(array: string[]) {
@@ -14,7 +13,7 @@ function convertStringArrayToBytes32(array: string[]) {
 
 describe("Ballot", function () {
   let ballotContract: Ballot;
-
+  
   beforeEach(async function () {
     const ballotFactory = await ethers.getContractFactory("Ballot");
     ballotContract = await ballotFactory.deploy(
