@@ -25,7 +25,7 @@ const deployFunction: DeployFunction = async () => {
       contract: `Ballot`,
       from: deployer,
       log: true,
-      args: [],
+      args: [args],
   })
 
 }
